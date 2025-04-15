@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -9,48 +8,47 @@ import {
   SelectValue,
 } from "./ui/select";
 
-type Option = {
-  value: string;
+export type SortSelectOption = {
+  sortKey: string;
+  sortValue: string;
   label: string;
 };
 
-type SortSelectProps = {
-  defaultValue?: string;
-  options: Option[];
+type SortObject = {
+  sortKey: string;
+  sortValue: string;
 };
 
-const SortSelect = ({ defaultValue, options }: SortSelectProps) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+type SortSelectProps = {
+  value: SortObject;
+  onChange: (sort: SortObject) => void;
+  options: SortSelectOption[];
+};
 
-  const handleSort = (value: string) => {
-    const params = new URLSearchParams(searchParams);
+const SortSelect = ({ value, onChange, options }: SortSelectProps) => {
+  const handleSort = (compositeKey: string) => {
+    const [sortKey, sortValue] = compositeKey.split("_");
 
-    if (value === defaultValue) {
-      params.delete("sort");
-    } else if (value) {
-      params.set("sort", value);
-    } else {
-      params.delete("sort");
-    }
-
-    replace(`${pathname}?${params.toString()}`, {
-      scroll: false,
+    onChange({
+      sortKey,
+      sortValue,
     });
   };
 
   return (
     <Select
       onValueChange={handleSort}
-      defaultValue={searchParams.get("sort")?.toString() || defaultValue}
+      defaultValue={value.sortKey + "_" + value.sortValue}
     >
       <SelectTrigger>
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
         {options.map((option) => (
-          <SelectItem key={option.value} value={option.value}>
+          <SelectItem
+            key={option.sortKey + option.sortValue}
+            value={option.sortKey + "_" + option.sortValue}
+          >
             {option.label}
           </SelectItem>
         ))}

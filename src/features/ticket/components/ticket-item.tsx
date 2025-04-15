@@ -81,7 +81,9 @@ const TicketItem = async ({ ticket, isDetail }: TicketItemProps) => {
           </span>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <p className="text-sm text-muted-foreground">{ticket.deadline}</p>
+          <p className="text-sm text-muted-foreground">
+            {ticket.createdAt.toLocaleDateString()}
+          </p>
           <p className="text-sm text-muted-foreground">
             {ticket.deadline} by {ticket.user.username}
           </p>
